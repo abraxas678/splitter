@@ -3,15 +3,14 @@ unzip
 wget
 zoxide
 copyq
-keepassxc
+#keepassxc
 bat
 exa
 zoxide
 fzf
 fd-find
 zsh
-tmux
-ripgrep
+#tmux
 python3-pip
 pipx
 wormhole

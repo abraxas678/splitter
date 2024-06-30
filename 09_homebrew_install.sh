@@ -23,4 +23,7 @@ fi
 
 # Install utilities using Homebrew
 
-brew install pueue
+while IFS= read -r line; do
+  [[ $line != "#"* ]] && brew install $line
+done < 	brew_all_multi.txt
+

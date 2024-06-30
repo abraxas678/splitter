@@ -71,6 +71,18 @@ while [[ $y = 1 ]]; do
         mysheet
 ### DONE
     elif [[ $ANS = d ]]; then
+     ls *multi*txt >mymulti
+       while IFS= read -r line; do
+          echo $line
+          micro $line
+            while IFS= read -r line2; do
+              echo $line2
+              read -p "y/n >> " ANS
+              db put splitter_multi.db $line2 $ANS
+            done < $line
+       done < mymulti
+     rm -f mymulti
+
       rm execute.sh
       db list splitter_state.db | sort >myitems
       echo; cat myitems; echo
