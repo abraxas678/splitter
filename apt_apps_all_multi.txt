@@ -1,3 +1,4 @@
+curl
 davfs2
 unzip
 wget

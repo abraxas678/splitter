@@ -129,10 +129,7 @@ fi
 
 # Install utilities using Homebrew
 
-while IFS= read -r line; do
-  [[ $line != "#"* ]] && brew install $line
-done < 	brew_all_multi.txt
-
+brew install pueue
 #!/bin/bash
 #6. github and gh setup
 
@@ -168,21 +165,29 @@ fi
 chmod +x ~/bin/*
 #!/bin/bash
 #7. App install via apt
-sudo apt update 
 
-installme() {
- which $1
- [[ $? != 0 ]] && sudo apt install -y $1 
-}
+installme davfs2
+installme unzip
+installme wget
+installme zoxide
+installme copyq
+installme keepassxc
 
-while IFS= read -r line; do
-  [[ $line != "#"* ]] && installme $line
-done <  apt_apps_all_multi.txt
+installme bat
+installme exa
+installme zoxide
+installme fzf
+installme fd-find
+installme zsh
+installme tmux
+installme ripgrep
+
 #!/bin/bash
 #9. Python3 install + Apps
 
 # Install Python packages using pipx
-
-  while IFS= read -r line; do
-    [[ $line != "#"* ]] && pipx install $line
-  done <  python_apps_all_multi.txt 
+installme python3-pip
+installme pipx
+pipx install rich-cli
+pipx install shell-gpt
+pipx install apprise
