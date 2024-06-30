@@ -14,3 +14,4 @@ tmux
 ripgrep
 python3-pip
 pipx
+wormhole
