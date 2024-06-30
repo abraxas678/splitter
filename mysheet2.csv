@@ -1,0 +1,12 @@
+01, [green]1[/green], [red]0[/red]1_init-env.sh
+02, [red]0[/red], 02_release-wait-script.sh
+03, [green]1[/green], [red]0[/red]3_last_update.sh
+04, [green]1[/green], [red]0[/red]4_user_setup.sh
+05, [green]1[/green], [red]0[/red]5_machine.sh
+06, [green]1[/green], [red]0[/red]6_tailscale-config.sh
+07, [green]1[/green], [red]0[/red]7_keyless.sh
+08, [green]1[/green], [red]0[/red]8_rclone-install.sh
+09, [green]1[/green], [red]0[/red]9_homebrew_install.sh
+10, [green]1[/green], 10_gh_setup.sh
+11, [green]1[/green], 11_apt_apps_multi.sh
+12, [green]1[/green], 12_python_apps_multi.sh
