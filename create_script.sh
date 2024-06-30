@@ -47,7 +47,8 @@ while [[ $y = 1 ]]; do
         FILE=$(cat mysheet.csv | grep "^$NUM" | awk '{print $3}')
         mv "$FILE" "$NEWNAME"
     elif [[ $ANS = n ]]; then
-        echo n
+      read -p "# >> " NUM
+      micro $(cat mysheet.csv | grep "^$NUM"  | awk '{print $3}')
     elif [[ $ANS = m ]]; then
         read -p "MOVE # >> " M1
         read -p "MOVE TO # >> " M2
