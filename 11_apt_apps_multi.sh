@@ -1,19 +1,12 @@
 #!/bin/bash
 #7. App install via apt
+sudo apt update 
 
-installme davfs2
-installme unzip
-installme wget
-installme zoxide
-installme copyq
-installme keepassxc
+installme() {
+ which $1
+ [[ $? != 0 ]] && sudo apt install -y $1 
+}
 
-installme bat
-installme exa
-installme zoxide
-installme fzf
-installme fd-find
-installme zsh
-installme tmux
-installme ripgrep
-
+while IFS= read -r line; do
+  [[ $line != "#"* ]] && installme $line
+done <  apt_apps_all_multi.txt
