@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change directory
-cd /home/abrax/tmp/public/splitter
+cd /home/abrax/tmp/splitter
 
 # Run Python script
 python rename_sequential.py
@@ -35,7 +35,7 @@ y=1
 # Loop for interactive menu
 while [[ $y = 1 ]]; do
     mysheet2
-    read -n 1 -p "[m]ove [r]ename [c]at [n]ano [#] >> " ANS1
+    read -n 1 -p "[m]ove [r]ename [c]at [n]ano [d]one [#] >> " ANS1
     LET=$(/home/abrax/bin/letter_or_number.sh "$ANS1")
     [[ "$LET" = *"number"* ]] &&  read -n 1  ANS2 && ANS="$ANS1$ANS2" || ANS=$ANS1
     echo
@@ -67,6 +67,7 @@ while [[ $y = 1 ]]; do
         mv "rename-$new_filename1" "$TARGET"
 
         mysheet
+### DONE
     elif [[ $ANS = d ]]; then
       rm execute.sh
       db list splitter_state.db | sort >myitems
@@ -75,11 +76,14 @@ while [[ $y = 1 ]]; do
             [[ $(db get splitter_state.db $line) = 1 ]] && cat $line >>execute.sh
         done < myitems
       rm -f myitems
+      echo; rich --pager -p "$(cat execute.sh)" -a rounded -s green
+      chmod +x *.sh
+     ./execute.sh
+      read me
     elif [[ $ANS = c ]]; then
         read -p "# >>" NUM
         batcat "$(cat mysheet.csv | grep "^$NUM" | awk '{print $3}')"
     else
-       
       #  STATE=$(cat mysheet.csv | grep "^$ANS," | awk '{print $2}' | sed "s/,//")
         FILE=$(cat mysheet.csv | grep "^$ANS," | awk '{print $3}' | sed "s/,//")
         STATE=$(db get splitter_state.db $FILE)

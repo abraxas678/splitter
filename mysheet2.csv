@@ -10,3 +10,7 @@
 10, [green]1[/green], 10_gh_setup.sh
 11, [green]1[/green], 11_apt_apps_multi.sh
 12, [green]1[/green], 12_python_apps_multi.sh
+13, [red]0[/red], [green]1[/green]3_execute.sh
+14, [red]0[/red], [green]1[/green]4_execute.sh
+15, [red]0[/red], [green]1[/green]5_execute.sh
+16, [red]0[/red], [green]1[/green]6_execute.sh

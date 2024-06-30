@@ -13,7 +13,7 @@ sleep 1
 
 # Color definitions
 
-#!/bin/bash
+!/bin/bash
 #3. APT update -- check last update time
 
 ts=$(date +%s)
@@ -32,7 +32,7 @@ echo $ts > ~/last_apt_update.txt
 sudo apt install -y unzip curl wget nano
 
 [[ ! -f Terminus.zip ]] && [[ ! -d Terminus ]] && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Terminus.zip && unzip Terminus.zip && sudo mv *.ttf /usr/share/fonts/truetype && sudo fc-cache -fv
-#!/bin/bash
+!/bin/bash
 #12. User setup
 # Task: Check if user is 'abrax'
 # TASK "CHECK: USER = abrax?"
@@ -53,8 +53,8 @@ exit
 fi
 fi
 
-#!/bin/bash
-#5. Check Machine Name
+!/bin/bash
+5. Check Machine Name
 
 # Change machine name
 #header2 "change machine name"
@@ -62,7 +62,7 @@ cd $HOME
 curl -sL machine.yyps.de > machine.sh
 chmod +x machine.sh
 ./machine.sh
-#!/bin/bash
+!/bin/bash
 #8. Tailscale Setup
 
 # Install Tailscale
@@ -90,13 +90,13 @@ curl https://hishtory.dev/install.py | python3 -
 hishtory init $YOUR_HISHTORY_SECRET
 
 
-#!/bin/bash
+!/bin/bash
 #04. akeyless setup
 curl -o akeyless https://akeyless-cli.s3.us-east-2.amazonaws.com/cli/latest/production/cli-linux-amd64
 chmod +x akeyless
 mv akeyless /home/abrax/bin/
 akeyless configure --access-id p-mcidcla45c0cam --access-type oidc --profile 'github-oidc'
-#!/bin/bash
+!/bin/bash
 #11 rclone install
 
 # Install rclone beta
@@ -104,7 +104,7 @@ echo "rclone beta"
 countdown 1
 sudo -v
 curl https://rclone.org/install.sh | sudo bash -s beta
-#!/bin/bash
+!/bin/bash
 #10. Homebrew Setup and Hombrew app install
 
 # Install Homebrew and its dependencies
@@ -130,7 +130,7 @@ fi
 # Install utilities using Homebrew
 
 brew install pueue
-#!/bin/bash
+!/bin/bash
 #6. github and gh setup
 
 installme git
@@ -163,7 +163,7 @@ fi
 
 # Set permissions for bin scripts
 chmod +x ~/bin/*
-#!/bin/bash
+!/bin/bash
 #7. App install via apt
 
 installme davfs2
@@ -182,7 +182,7 @@ installme zsh
 installme tmux
 installme ripgrep
 
-#!/bin/bash
+!/bin/bash
 #9. Python3 install + Apps
 
 # Install Python packages using pipx
