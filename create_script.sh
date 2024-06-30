@@ -3,6 +3,8 @@
 # Change directory
 cd /home/abrax/tmp/splitter
 
+[[ ! -f /usr/local/bin/db ]] && cp db /usr/local/bin
+
 # Run Python script
 python rename_sequential.py
 
