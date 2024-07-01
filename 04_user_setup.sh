@@ -1,20 +1,26 @@
 #!/bin/bash
 #12. User setup
-# Task: Check if user is 'abrax'
-# TASK "CHECK: USER = abrax?"
-if [[ $USER != *"abrax"* ]]; then
+# Task: Check if user is '$CHECKUSER'
+# TASK "CHECK: USER = $CHECKUSER?"
+CHECKUSER="$CHECKUSER"
+echo
+echo "CHECKUSER $CHECKUSER" | /home/abrax/bin/green.sh
+echo
+CHAN=0
+read -p "press [c] to change the target user. 7 seconds countdown." CHAN
+if [[ $USER != *"$CHECKUSER"* ]]; then
 sudo apt install -y sudo
 if [[ $USER == *"root"* ]]; then
-su abrax
-adduser abrax
-usermod -aG sudo abrax
-su abrax
+su $CHECKUSER
+adduser $CHECKUSER
+usermod -aG sudo $CHECKUSER
+su $CHECKUSER
 exit
 else
-su abrax
-sudo adduser abrax
-sudo usermod -aG sudo abrax
-su abrax
+su $CHECKUSER
+sudo adduser $CHECKUSER
+sudo usermod -aG sudo $CHECKUSER
+su $CHECKUSER
 exit
 fi
 fi
