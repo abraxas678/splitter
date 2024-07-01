@@ -7,7 +7,9 @@ echo
 echo "CHECKUSER $CHECKUSER" | /home/abrax/bin/green.sh
 echo
 CHAN=0
-read -p "press [c] to change the target user. 7 seconds countdown." CHAN
+read -n 1 -t 7 -p "press [c] to change the target user. 7 seconds countdown." CHAN
+echo
+[[ $CHAN = c ]] && read -p "username: >> " CHECKUSER
 if [[ $USER != *"$CHECKUSER"* ]]; then
 sudo apt install -y sudo
 if [[ $USER == *"root"* ]]; then
