@@ -1,0 +1,56 @@
+#!/bin/bash
+$HOME/bin/sudo.sh ls ~/tmp >/dev/null 2>/dev/null
+#read -p "REMOTE: >> " REMOTE
+REMOTE=sb2
+clear
+rich -p "SYNC.SH  --  REMOTE: $REMOTE" -s "black on yellow" -a heavy
+echo
+dotfile_check() {
+  rich -p "dotfile-check.sh" -u -s "green" -S "blue"
+  [[ $@ = *"-skip"* ]] && echo "skipping dotfile-check" || $HOME/bin/dotfile-check.sh
+  echo
+  rich -p BUTTON -s "#999999"
+  read me
+  echo
+  ts=$(date +"%s")
+}
+
+rich -p "sync.sh" -u -s "green" -S "blue"
+[[ "$@" = *"-force"* ]] && FORCE="" || FORCE="--update"
+echo
+[[ $FORCE = "--update" ]] && TXT="--update is used, no force" || TXT="FORCE USED, no --update"
+[[ $FORCE = "--update" ]] && COL=green || COL=red
+rich -p "$TXT" -s "$COL" -a rounded
+echo
+$HOME/bin/header.sh "SYNC DOTFILES" #yellow
+read -p "Create or Restore >> " -n 1 ANSWER
+echo
+echo
+### CREATE ###
+if [[ $ANSWER = "c" ]]; then
+  echo $ts >/home/abrax/.config/sync_version
+  $HOME/bin/header.sh CREATE
+  rclone --skip-links sync /home/$USER $REMOTE:sync.sh/ -L $FORCE --max-depth 5 --filter-from="$HOME/.config/sync.txt" -P --password-command="echo 00990099" --backup-dir $REMOTE:backup/rclone_auto_backup/sync.sh --suffix =$ts
+  rclone cat $REMOTE:sync.sh/.config/sync_version >/home/abrax/tmp/sync_version
+  sudo mv /home/abrax/tmp/sync_version /home/
+
+  rich -p "COPY PUBLIC FILES" -s yellow
+  rclone copy /home/abrax/.config/sync.txt $REMOTE:public -P --progress-terminal-title --stats-one-line
+  rclone copy /home/abrax/bin/header.sh $REMOTE:public -P --progress-terminal-title --stats-one-line
+  rclone copy /home/abrax/bin/dotfile_check.sh $REMOTE:public -P --progress-terminal-title --stats-one-line
+  rclone copy /home/abrax/bin/check_command.sh $REMOTE:public -P --progress-terminal-title --stats-one-line
+  rclone copy /home/abrax/bin/red_cross.sh $REMOTE:public -P --progress-terminal-title --stats-one-line
+  rclone copy /home/abrax/bin/green_checkmark.sh $REMOTE:public -P --progress-terminal-title --stats-one-line
+
+#  rclone sync ~/bin $REMOTE:sync.sh/BIN --update -P --exclude=".git/**" --exclude="**git**" --exclude="**cache**"
+
+### RESTORE ###
+elif [[ $ANSWER = "r" ]]; then
+  sudo mkdir -p /home/rclone_auto_backup/sync.sh/
+  sudo chown $USER: -R /home/rclone_auto_backup/sync.sh/
+  $HOME/bin/header.sh RESTORE
+  rclone copy $REMOTE:sync.sh/ /home/$USER -L $FORCE --filter-from="$HOME/.config/sync.txt" -P --password-command="echo 00990099" --backup-dir /home/rclone_auto_backup/sync.sh/ --suffix =$ts
+  rclone cat $REMOTE:sync.sh/.config/sync_version >/home/abrax/tmp/sync_version
+  sudo mv /home/abrax/tmp/sync_version /home/
+fi
+echo

@@ -1,0 +1,1 @@
+[[ -f /home/abrax/bin/header_me.sh ]] && source /home/abrax/bin/header_me.sh

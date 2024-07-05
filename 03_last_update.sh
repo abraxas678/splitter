@@ -1,6 +1,8 @@
 #!/bin/bash
 #3. APT update -- check last update time
 
+[[ -f /home/abrax/bin/header_me.sh ]] && source /home/abrax/bin/header_me.sh
+
 ts=$(date +%s)
 
 if [[ -f ~/last_apt_update.txt ]]; then

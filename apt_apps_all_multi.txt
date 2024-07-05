@@ -7,11 +7,12 @@ copyq
 #keepassxc
 bat
 exa
-zoxide
 fzf
 fd-find
 zsh
 #tmux
-python3-pip
-pipx
+#python3-pip
 wormhole
+restic
+docker.io
+docker-compose

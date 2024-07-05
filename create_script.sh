@@ -3,10 +3,26 @@
 # Change directory
 cd /home/abrax/tmp/splitter
 
-[[ ! -f /usr/local/bin/db ]] && cp db /usr/local/bin
+[[ ! -f /usr/local/bin/db ]] && sudo cp cd /home/abrax/tmp/splitter/db /usr/local/bin
+
+sudo apt install python3-pip pipx
+
+pipx install rich-cli
+pipx ensurepath
+ts=$(date +%s)
+echo $ts >exec.done
+
+#LAST=$(cat ./exec.done)
+#äNOW=$(date +%s)
+#DIFF=$((NOW-LAST))
+#[[ $DIFF <  3600 ]] 
+pipx ensurepath >res 2>&1
+[[ $(cat res) != *"All pipx binary directories have been added to PATH"* ]] && echo && echo start ./create_script.sh again && exec bash
+rm res -f
+
 
 # Run Python script
-python rename_sequential.py
+python3 rename_sequential.py
 
 
 # Define function to create the sheet

@@ -5,11 +5,12 @@ sudo apt update
 
 installme() {
  which $1
- [[ $? != 0 ]] && sudo apt install -y $1 
+ [[ $? != 0 ]] && brew install $1 
 }
 
 while IFS= read -r line; do
   [[ $line != "#"* ]] && installme $line
-done <  apt_apps_all_multi.txt
+done <  brew_apps_all_multi.txt
 
-sudo restic self-update
+brew services start pueue
+pueue group add keepon

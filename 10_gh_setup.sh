@@ -1,8 +1,12 @@
 #!/bin/bash
 #6. github and gh setup
 
-installme git
-installme gh
+
+
+
+
+sudo apt install - y git
+sudo apt install - y gh
 
 git config --global user.email "abraxas678@gmail.com"
 git config --global user.name "abraxas678"
@@ -25,9 +29,14 @@ cd
 if [[ ! -d $MYHOME/bin ]]; then
 gh repo clone abraxas678/bin
 sleep 1
-gh repo clone abraxas678/.config
+cd /home/abrax
+gh repo clone abraxas678/.config temp-directory
+cp -r temp-directory/* .config/
+rm -rf temp-directory
 sleep 1
 fi
 
 # Set permissions for bin scripts
 chmod +x ~/bin/*
+
+cp /home/abrax/bin/sync.* /home/abrax/tmp/splitter/

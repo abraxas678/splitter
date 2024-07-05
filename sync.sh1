@@ -1,0 +1,52 @@
+#!/bin/bash
+$HOME/bin/sudo.sh ls ~/tmp >/dev/null 2>/dev/null
+echo
+rich -p "dotfile-check.sh" -u -s "green" -S "blue"
+[[ $@ = *"-skip"* ]] && echo "skipping dotfile-check" || $HOME/bin/dotfile-check.sh
+echo
+rich -p BUTTON -s "#999999"
+read me
+echo
+ts=$(date +"%s")
+#VERS_ONLINE=$(rclone cat db:sync.sh/.config/sync_version)
+#VERS_LOCAL=$(sudo cat /home/sync_version)
+#echo VERSION
+#[[ "$VERS_LOCAL" != "$VERS_ONLINE" ]] && echo "=== VERSION DIFFERENCE !! ==="
+#echo "LOCAL       ONLINE"
+#echo $VERS_LOCAL $VERS_ONLINE
+#echo
+#read -t 2 me
+rich -p "sync.sh" -u -s "green" -S "blue"
+[[ "$@" = *"-force"* ]] && FORCE="" || FORCE="--update"
+echo
+echo "FORCE: $FORCE"
+echo
+$HOME/bin/header.sh "SYNC DOTFILES" #yellow
+read -p "Create or Restore >> " -n 1 ANSWER
+echo
+echo
+if [[ $ANSWER = "c" ]]; then
+  echo $ts >/home/abrax/.config/sync_version
+  $HOME/bin/header.sh CREATE
+  rclone sync /home/$USER db:sync.sh/ -L $FORCE --max-depth 3 --filter-from="$HOME/.config/sync.txt" -P --password-command="echo 00990099" --backup-dir db:backup/rclone_auto_backup/sync.sh --suffix =$ts
+  rclone cat db:sync.sh/.config/sync_version >/home/abrax/tmp/sync_version
+  sudo mv /home/abrax/tmp/sync_version /home/
+
+  rclone copy /home/abrax/.config/sync.txt db:public -P
+  rclone copy /home/abrax/bin/header.sh db:public -P
+  rclone copy /home/abrax/bin/dotfile_check.sh db:public -P
+  rclone copy /home/abrax/bin/check_command.sh db:public -P
+  rclone copy /home/abrax/bin/red_cross.sh db:public -P
+  rclone copy /home/abrax/bin/green_checkmark.sh db:public -P
+
+#  rclone sync ~/bin db:sync.sh/BIN --update -P --exclude=".git/**" --exclude="**git**" --exclude="**cache**"
+
+elif [[ $ANSWER = "r" ]]; then
+  sudo mkdir -p /home/rclone_auto_backup/sync.sh/
+  sudo chown $USER: -R /home/rclone_auto_backup/sync.sh/
+  $HOME/bin/header.sh RESTORE
+  rclone copy db:sync.sh/ /home/$USER -L $FORCE --max-depth 3 --filter-from="$HOME/.config/sync.txt" -P --password-command="echo 00990099" --backup-dir /home/rclone_auto_backup/sync.sh/ --suffix =$ts
+  rclone cat db:sync.sh/.config/sync_version >/home/abrax/tmp/sync_version
+  sudo mv /home/abrax/tmp/sync_version /home/
+fi
+echo
