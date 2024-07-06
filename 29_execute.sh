@@ -137,35 +137,6 @@ countdown 1
 sudo -v
 curl https://rclone.org/install.sh | sudo bash -s beta
 #!/bin/bash
-#10. Homebrew Setup and Hombrew app install
-
-# Install Homebrew and its dependencies
-brew_install() {
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-  sudo apt-get install -y build-essential
-  brew install gcc
-  echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $MYHOME/.zshrc
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  exec zsh
-  export ANS=n
-}
-
-# Install Homebrew if not already installed
-which brew > /dev/null
-if [[ $? != 0 ]]; then
-  echo -e "${YELLOW}INSTALL: Homebrew${RESET}"
-  countdown 1
-  brew_install
-fi
-
-# Install utilities using Homebrew
-
-while IFS= read -r line; do
-  [[ $line != "#"* ]] && brew install $line
-done < 	brew_all_multi.txt
-
-#!/bin/bash
 #6. github and gh setup
 
 
@@ -304,12 +275,6 @@ fi
 
 header1 done
 
-#!	
-if command -v curl >/dev/null 2>&1; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-else
-  sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-fi
 #!/bin/bash
 #7. App install via apt
 cd /home/abrax/tmp/splitter
@@ -326,9 +291,3 @@ done <  brew_apps_all_multi.txt
 
 brew services start pueue
 pueue group add keepon
-#!/bin/bash
-
-# HISHTORY
-curl https://hishtory.dev/install.py | python3 -
-hishtory init $YOUR_HISHTORY_SECRET
-
