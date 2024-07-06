@@ -95,118 +95,11 @@ curl -sL machine.yyps.de > mymachine.sh
 chmod +x mymachine.sh
 ./mymachine.sh
 #!/bin/bash
-#8. Tailscale Setup
-
-# Install Tailscale
-which tailscale > /dev/null
-if [[ $? != 0 ]]; then
-  echo "install tailscale"
-  sleep 1
-  curl -L https://tailscale.com/install.sh | sh
-  sudo tailscale up
-fi
-sudo tailscale up --ssh --accept-routes
-tailscale status
-countdown 2
-
-tailscale status
-if [[ $? != "0" ]]; then
-  sudo tailscaled --tun=userspace-networking --socks5-server=localhost:1055 --outbound-http-proxy-listen=localhost:1055 &
-  countdown 2
-  sudo tailscale up --ssh --accept-routes
-fi
-echo
-
-# HISHTORY
-#curl https://hishtory.dev/install.py | python3 -
-#hishtory init $YOUR_HISHTORY_SECRET
-
-
-#!/bin/bash
 #04. akeyless setup
 curl -o akeyless https://akeyless-cli.s3.us-east-2.amazonaws.com/cli/latest/production/cli-linux-amd64
 chmod +x akeyless
 mv akeyless /home/abrax/bin/
 akeyless configure --access-id p-mcidcla45c0cam --access-type oidc --profile 'github-oidc'
-#!/bin/bash
-#11 rclone install
-
-# Install rclone beta
-echo "rclone beta"
-countdown 1
-sudo -v
-curl https://rclone.org/install.sh | sudo bash -s beta
-#!/bin/bash
-#10. Homebrew Setup and Hombrew app install
-
-# Install Homebrew and its dependencies
-brew_install() {
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-  sudo apt-get install -y build-essential
-  brew install gcc
-  echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $MYHOME/.zshrc
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  exec zsh
-  export ANS=n
-}
-
-# Install Homebrew if not already installed
-which brew > /dev/null
-if [[ $? != 0 ]]; then
-  echo -e "${YELLOW}INSTALL: Homebrew${RESET}"
-  countdown 1
-  brew_install
-fi
-
-# Install utilities using Homebrew
-
-while IFS= read -r line; do
-  [[ $line != "#"* ]] && brew install $line
-done < 	brew_all_multi.txt
-
-#!/bin/bash
-#6. github and gh setup
-
-
-
-
-
-sudo apt install - y git
-sudo apt install - y gh
-
-git config --global user.email "abraxas678@gmail.com"
-git config --global user.name "abraxas678"
-
-# GitHub authentication and cloning repositories
-gh repo list > /dev/null
-if [[ $? == 0 ]]; then
-  echo "gh logged in"
-  sleep 1
-else
-  gh status
-  gh auth refresh -h github.com -s admin:public_key
-  gh ssh-key add ./id_ed25519.pub
-fi
-echo
-sleep 2
-
-# Clone repositories if not already cloned
-cd
-if [[ ! -d $MYHOME/bin ]]; then
-gh repo clone abraxas678/bin
-sleep 1
-cd /home/abrax
-gh repo clone abraxas678/.config temp-directory
-cp -r temp-directory/* .config/
-rm -rf temp-directory
-sleep 1
-fi
-
-# Set permissions for bin scripts
-chmod +x ~/bin/*
-
-cp /home/abrax/bin/sync.* /home/abrax/tmp/splitter/
 #!/bin/bash
 #7. App install via apt
 cd /home/abrax/tmp/splitter
@@ -304,12 +197,6 @@ fi
 
 header1 done
 
-#!	
-if command -v curl >/dev/null 2>&1; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-else
-  sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-fi
 #!/bin/bash
 #7. App install via apt
 cd /home/abrax/tmp/splitter
@@ -331,4 +218,8 @@ pueue group add keepon
 # HISHTORY
 curl https://hishtory.dev/install.py | python3 -
 hishtory init $YOUR_HISHTORY_SECRET
+
+#!/bin/bash
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3
 
