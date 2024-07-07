@@ -166,6 +166,48 @@ while IFS= read -r line; do
 done < 	brew_all_multi.txt
 
 #!/bin/bash
+#6. github and gh setup
+
+
+
+
+
+sudo apt install - y git
+sudo apt install - y gh
+
+git config --global user.email "abraxas678@gmail.com"
+git config --global user.name "abraxas678"
+
+# GitHub authentication and cloning repositories
+gh repo list > /dev/null
+if [[ $? == 0 ]]; then
+  echo "gh logged in"
+  sleep 1
+else
+  gh status
+  gh auth refresh -h github.com -s admin:public_key
+  gh ssh-key add ./id_ed25519.pub
+fi
+echo
+sleep 2
+
+# Clone repositories if not already cloned
+cd
+if [[ ! -d $MYHOME/bin ]]; then
+gh repo clone abraxas678/bin
+sleep 1
+cd /home/abrax
+gh repo clone abraxas678/.config temp-directory
+cp -r temp-directory/* .config/
+rm -rf temp-directory
+sleep 1
+fi
+
+# Set permissions for bin scripts
+chmod +x ~/bin/*
+
+cp /home/abrax/bin/sync.* /home/abrax/tmp/splitter/
+#!/bin/bash
 #7. App install via apt
 cd /home/abrax/tmp/splitter
 sudo apt update 
@@ -194,6 +236,22 @@ if command -v curl >/dev/null 2>&1; then
 else
   sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
 fi
+#!/bin/bash
+#7. App install via apt
+cd /home/abrax/tmp/splitter
+sudo apt update 
+
+installme() {
+ which $1
+ [[ $? != 0 ]] && brew install $1 
+}
+
+while IFS= read -r line; do
+  [[ $line != "#"* ]] && installme $line
+done <  brew_apps_all_multi.txt
+
+brew services start pueue
+pueue group add keepon
 #!/bin/bash
 clear
 command -v age >/dev/null 2>&1 || { echo >&2 "age is not installed. Installing..."; sleep 2; sudo apt-get update && sudo apt-get install -y age; }
@@ -262,6 +320,28 @@ fi
 
 header1 done
 
+#!/bin/bash
+echo
+echo machine.sh v0.3
+cd $HOME
+echo
+echo "hostname: $(hostname)"
+read -p "new hostname: >> " HOSTNAME
+HOSTNAME_OLD=$(hostname)
+sudo hostnamectl set-hostname "$HOSTNAME"
+sudo echo "$HOSTNAME" >$HOME/hostname
+sudo mv $HOME/hostname /etc/hostname
+echo; echo "/etc/hostname: "; cat /etc/hostname; echo
+sudo sed -i "s/$HOSTNAME_OLD/$HOSTNAME/g" /etc/hosts
+echo; echo "/etc/hosts: "; cat /etc/hosts; echo
+cd $HOME
+sudo apt install -y wget
+wget https://raw.githubusercontent.com/abraxas678/public/master/wsl.conf
+#cp $HOME/server_setup/wsl.conf $HOME
+sed -i "s/CHANGEHOSTNAME/$HOSTNAME/g" $HOME/wsl.conf
+sudo mv wsl.conf /etc/
+read -p "ENTER TO RESTART" me
+sudo reboot -f
 #!	
 if command -v curl >/dev/null 2>&1; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
@@ -293,28 +373,4 @@ hishtory init $YOUR_HISHTORY_SECRET
 #!/bin/bash
 curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3
-
-#!/bin/bash
-
-# Example variable
-ANS="$@"
-
-# Function to check if a string contains only letters
-is_letter() {
-    [[ $1 =~ ^[[:alpha:]]$ ]]
-}
-
-# Function to check if a string contains only numbers
-is_number() {
-    [[ $1 =~ ^[[:digit:]]+$ ]]
-}
-
-# Check if $ANS is a letter
-if is_letter "$ANS"; then
-    echo "letter."
-elif is_number "$ANS"; then
-    echo "number."
-else
-    echo "$ANS is neither a letter nor a number."
-fi
 

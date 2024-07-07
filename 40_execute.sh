@@ -37,64 +37,6 @@ countdown() {
 # Color definitions
 
 #!/bin/bash
-#3. APT update -- check last update time
-
-[[ -f /home/abrax/bin/header_me.sh ]] && source /home/abrax/bin/header_me.sh
-
-ts=$(date +%s)
-
-if [[ -f ~/last_apt_update.txt ]]; then
-  DIFF=$(($ts - $(cat ~/last_apt_update.txt)))
-  if [[ $DIFF -gt 6000 ]]; then
-    sudo apt update && sudo apt upgrade -y
-  fi
-else
-  sudo apt update && sudo apt upgrade -y
-fi
-
-echo $ts > ~/last_apt_update.txt
-
-sudo apt install -y unzip curl wget nano
-
-[[ ! -f Terminus.zip ]] && [[ ! -d Terminus ]] && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Terminus.zip && unzip Terminus.zip && sudo mv *.ttf /usr/share/fonts/truetype && sudo fc-cache -fv
-#!/bin/bash
-#12. User setup
-# Task: Check if user is '$CHECKUSER'
-# TASK "CHECK: USER = $CHECKUSER?"
-CHECKUSER="$CHECKUSER"
-echo
-echo "CHECKUSER $CHECKUSER" | /home/abrax/bin/green.sh
-echo
-CHAN=0
-read -n 1 -t 7 -p "press [c] to change the target user. 7 seconds countdown." CHAN
-echo
-[[ $CHAN = c ]] && read -p "username: >> " CHECKUSER
-if [[ $USER != *"$CHECKUSER"* ]]; then
-sudo apt install -y sudo
-if [[ $USER == *"root"* ]]; then
-su $CHECKUSER
-adduser $CHECKUSER
-usermod -aG sudo $CHECKUSER
-su $CHECKUSER
-exit
-else
-su $CHECKUSER
-sudo adduser $CHECKUSER
-sudo usermod -aG sudo $CHECKUSER
-su $CHECKUSER
-exit
-fi
-fi
-
-#!/bin/bash
-#5. Check Machine Name
-
-# Change machine name
-#header2 "change machine name"
-curl -sL machine.yyps.de > mymachine.sh
-chmod +x mymachine.sh
-./mymachine.sh
-#!/bin/bash
 #8. Tailscale Setup
 
 # Install Tailscale
@@ -137,34 +79,47 @@ countdown 1
 sudo -v
 curl https://rclone.org/install.sh | sudo bash -s beta
 #!/bin/bash
-#10. Homebrew Setup and Hombrew app install
+#6. github and gh setup
 
-# Install Homebrew and its dependencies
-brew_install() {
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-  sudo apt-get install -y build-essential
-  brew install gcc
-  echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $MYHOME/.zshrc
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  exec zsh
-  export ANS=n
-}
 
-# Install Homebrew if not already installed
-which brew > /dev/null
-if [[ $? != 0 ]]; then
-  echo -e "${YELLOW}INSTALL: Homebrew${RESET}"
-  countdown 1
-  brew_install
+
+
+
+sudo apt install - y git
+sudo apt install - y gh
+
+git config --global user.email "abraxas678@gmail.com"
+git config --global user.name "abraxas678"
+
+# GitHub authentication and cloning repositories
+gh repo list > /dev/null
+if [[ $? == 0 ]]; then
+  echo "gh logged in"
+  sleep 1
+else
+  gh status
+  gh auth refresh -h github.com -s admin:public_key
+  gh ssh-key add ./id_ed25519.pub
+fi
+echo
+sleep 2
+
+# Clone repositories if not already cloned
+cd
+if [[ ! -d $MYHOME/bin ]]; then
+gh repo clone abraxas678/bin
+sleep 1
+cd /home/abrax
+gh repo clone abraxas678/.config temp-directory
+cp -r temp-directory/* .config/
+rm -rf temp-directory
+sleep 1
 fi
 
-# Install utilities using Homebrew
+# Set permissions for bin scripts
+chmod +x ~/bin/*
 
-while IFS= read -r line; do
-  [[ $line != "#"* ]] && brew install $line
-done < 	brew_all_multi.txt
-
+cp /home/abrax/bin/sync.* /home/abrax/tmp/splitter/
 #!/bin/bash
 #7. App install via apt
 cd /home/abrax/tmp/splitter
@@ -194,6 +149,22 @@ if command -v curl >/dev/null 2>&1; then
 else
   sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
 fi
+#!/bin/bash
+#7. App install via apt
+cd /home/abrax/tmp/splitter
+sudo apt update 
+
+installme() {
+ which $1
+ [[ $? != 0 ]] && brew install $1 
+}
+
+while IFS= read -r line; do
+  [[ $line != "#"* ]] && installme $line
+done <  brew_apps_all_multi.txt
+
+brew services start pueue
+pueue group add keepon
 #!/bin/bash
 clear
 command -v age >/dev/null 2>&1 || { echo >&2 "age is not installed. Installing..."; sleep 2; sudo apt-get update && sudo apt-get install -y age; }
@@ -262,12 +233,6 @@ fi
 
 header1 done
 
-#!	
-if command -v curl >/dev/null 2>&1; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-else
-  sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-fi
 #!/bin/bash
 #7. App install via apt
 cd /home/abrax/tmp/splitter
@@ -293,28 +258,4 @@ hishtory init $YOUR_HISHTORY_SECRET
 #!/bin/bash
 curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3
-
-#!/bin/bash
-
-# Example variable
-ANS="$@"
-
-# Function to check if a string contains only letters
-is_letter() {
-    [[ $1 =~ ^[[:alpha:]]$ ]]
-}
-
-# Function to check if a string contains only numbers
-is_number() {
-    [[ $1 =~ ^[[:digit:]]+$ ]]
-}
-
-# Check if $ANS is a letter
-if is_letter "$ANS"; then
-    echo "letter."
-elif is_number "$ANS"; then
-    echo "number."
-else
-    echo "$ANS is neither a letter nor a number."
-fi
 
