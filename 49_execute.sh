@@ -237,22 +237,6 @@ else
   sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
 fi
 #!/bin/bash
-#7. App install via apt
-cd /home/abrax/tmp/splitter
-sudo apt update 
-
-installme() {
- which $1
- [[ $? != 0 ]] && brew install $1 
-}
-
-while IFS= read -r line; do
-  [[ $line != "#"* ]] && installme $line
-done <  brew_apps_all_multi.txt
-
-brew services start pueue
-pueue group add keepon
-#!/bin/bash
 clear
 command -v age >/dev/null 2>&1 || { echo >&2 "age is not installed. Installing..."; sleep 2; sudo apt-get update && sudo apt-get install -y age; }
 export RCLONE_PASSWORD_COMMAND='akeyless get-secret-value --name RCLONE_CONFIG_PASS'
@@ -320,28 +304,6 @@ fi
 
 header1 done
 
-#!/bin/bash
-echo
-echo machine.sh v0.3
-cd $HOME
-echo
-echo "hostname: $(hostname)"
-read -p "new hostname: >> " HOSTNAME
-HOSTNAME_OLD=$(hostname)
-sudo hostnamectl set-hostname "$HOSTNAME"
-sudo echo "$HOSTNAME" >$HOME/hostname
-sudo mv $HOME/hostname /etc/hostname
-echo; echo "/etc/hostname: "; cat /etc/hostname; echo
-sudo sed -i "s/$HOSTNAME_OLD/$HOSTNAME/g" /etc/hosts
-echo; echo "/etc/hosts: "; cat /etc/hosts; echo
-cd $HOME
-sudo apt install -y wget
-wget https://raw.githubusercontent.com/abraxas678/public/master/wsl.conf
-#cp $HOME/server_setup/wsl.conf $HOME
-sed -i "s/CHANGEHOSTNAME/$HOSTNAME/g" $HOME/wsl.conf
-sudo mv wsl.conf /etc/
-read -p "ENTER TO RESTART" me
-sudo reboot -f
 #!	
 if command -v curl >/dev/null 2>&1; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
@@ -369,8 +331,4 @@ pueue group add keepon
 # HISHTORY
 curl https://hishtory.dev/install.py | python3 -
 hishtory init $YOUR_HISHTORY_SECRET
-
-#!/bin/bash
-curl -fsSL https://ollama.com/install.sh | sh
-ollama pull llama3
 
