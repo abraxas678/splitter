@@ -1,8 +1,7 @@
-PMANAGER=dnf
 #!/bin/bash
-#7. App install via $PMANAGER
+#7. App install via apt
 cd /home/abrax/tmp/splitter
-sudo $PMANAGER update 
+sudo apt update 
 
 installme() {
  which $1
