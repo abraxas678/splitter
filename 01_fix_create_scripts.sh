@@ -3,6 +3,11 @@
 # Change directory
 cd /home/abrax/tmp/splitter
 
+rm *_execute.sh
+rm execute.sh
+
+rclone dedupe --by-hash --dedupe-mode oldest --max-depth 1
+
 [[ ! -f /usr/local/bin/db ]] && sudo cp /home/abrax/tmp/splitter/db /usr/local/bin/
 
 sudo apt install python3-pip pipx
