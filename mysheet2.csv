@@ -24,4 +24,5 @@
 24, , 24_replace.sh
 25, [red]0[/red], 25_machine.sh
 26, [red]0[/red], 26_hishtory.sh
-27, , 27_execute.sh
+27, , 27_sync.sh
+28, , 28_visudo.sh

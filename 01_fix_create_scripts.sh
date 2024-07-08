@@ -3,8 +3,8 @@
 # Change directory
 cd /home/abrax/tmp/splitter
 
-rm *_execute.sh
-rm execute.sh
+rm *_execute.sh -f
+rm execute.sh -f
 
 rclone dedupe --by-hash --dedupe-mode oldest --max-depth 1
 

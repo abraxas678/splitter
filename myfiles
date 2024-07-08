@@ -24,4 +24,5 @@
 24_replace.sh
 25_machine.sh
 26_hishtory.sh
-27_execute.sh
+27_sync.sh
+28_visudo.sh
