@@ -37,101 +37,15 @@ countdown() {
 # Color definitions
 
 #!/bin/bash
-#3. APT update -- check last update time
-
-[[ -f /home/abrax/bin/header_me.sh ]] && source /home/abrax/bin/header_me.sh
-
-ts=$(date +%s)
-
-if [[ -f ~/last_apt_update.txt ]]; then
-  DIFF=$(($ts - $(cat ~/last_apt_update.txt)))
-  if [[ $DIFF -gt 6000 ]]; then
-    sudo apt update && sudo apt upgrade -y
-  fi
-else
-  sudo apt update && sudo apt upgrade -y
-fi
-
-echo $ts > ~/last_apt_update.txt
-
-sudo apt install -y unzip curl wget nano
-
-[[ ! -f Terminus.zip ]] && [[ ! -d Terminus ]] && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Terminus.zip && unzip Terminus.zip && sudo mv *.ttf /usr/share/fonts/truetype && sudo fc-cache -fv
-#!/bin/bash
-#12. User setup
-# Task: Check if user is '$CHECKUSER'
-# TASK "CHECK: USER = $CHECKUSER?"
-CHECKUSER="$CHECKUSER"
-echo
-echo "CHECKUSER $CHECKUSER" | /home/abrax/bin/green.sh
-echo
-CHAN=0
-read -n 1 -t 7 -p "press [c] to change the target user. 7 seconds countdown." CHAN
-echo
-[[ $CHAN = c ]] && read -p "username: >> " CHECKUSER
-if [[ $USER != *"$CHECKUSER"* ]]; then
-sudo apt install -y sudo
-if [[ $USER == *"root"* ]]; then
-su $CHECKUSER
-adduser $CHECKUSER
-usermod -aG sudo $CHECKUSER
-su $CHECKUSER
-exit
-else
-su $CHECKUSER
-sudo adduser $CHECKUSER
-sudo usermod -aG sudo $CHECKUSER
-su $CHECKUSER
-exit
-fi
-fi
-
-#!/bin/bash
-#5. Check Machine Name
-
-# Change machine name
-#header2 "change machine name"
-curl -sL machine.yyps.de > mymachine.sh
-chmod +x mymachine.sh
-./mymachine.sh
-#!/bin/bash
 #04. akeyless setup
 curl -o akeyless https://akeyless-cli.s3.us-east-2.amazonaws.com/cli/latest/production/cli-linux-amd64
 chmod +x akeyless
 mv akeyless /home/abrax/bin/
 akeyless configure --access-id p-mcidcla45c0cam --access-type oidc --profile 'github-oidc'
-#!/bin/bash
-#7. App install via apt
-cd /home/abrax/tmp/splitter
-sudo apt update 
-
-installme() {
- which $1
- [[ $? != 0 ]] && sudo apt install -y $1 
-}
-
-while IFS= read -r line; do
-  [[ $line != "#"* ]] && installme $line
-done <  apt_apps_all_multi.txt
-
-sudo restic self-update
-#!/bin/bash
-#9. Python3 install + Apps
-cd /home/abrax/tmp/splitter
-# Install Python packages using pipx
-
-  while IFS= read -r line; do
-    [[ $line != "#"* ]] && pipx install $line
-  done <  python_apps_all_multi.txt 
-#!	
-if command -v curl >/dev/null 2>&1; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-else
-  sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-fi
+PMANAGER=dnf
 #!/bin/bash
 clear
-command -v age >/dev/null 2>&1 || { echo >&2 "age is not installed. Installing..."; sleep 2; sudo apt-get update && sudo apt-get install -y age; }
+command -v age >/dev/null 2>&1 || { echo >&2 "age is not installed. Installing..."; sleep 2; sudo $PMANAGER-get update && sudo $PMANAGER-get install -y age; }
 export RCLONE_PASSWORD_COMMAND='akeyless get-secret-value --name RCLONE_CONFIG_PASS'
 
 GREEN='\033[0;32m'
@@ -213,13 +127,30 @@ done <  brew_apps_all_multi.txt
 
 brew services start pueue
 pueue group add keepon
+PMANAGER=dnf
+#!/bin/bash
+#7. App install via $PMANAGER
+cd /home/abrax/tmp/splitter
+sudo $PMANAGER update 
+
+installme() {
+ which $1
+ [[ $? != 0 ]] && brew install $1 
+}
+
+while IFS= read -r line; do
+  [[ $line != "#"* ]] && installme $line
+done <  brew_apps_all_multi.txt
+
+brew services start pueue
+pueue group add keepon
+#!/bin/bash
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3
+
 #!/bin/bash
 
 # HISHTORY
 curl https://hishtory.dev/install.py | python3 -
 hishtory init $YOUR_HISHTORY_SECRET
-
-#!/bin/bash
-curl -fsSL https://ollama.com/install.sh | sh
-ollama pull llama3
 
