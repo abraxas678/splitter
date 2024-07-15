@@ -1,7 +1,7 @@
 import os
 
 # Specify the directory
-directory = '.'
+directory = './shs'
 exclude_file = 'create_script.sh'
 
 # Get a list of all .sh files in the directory (ignoring subfolders and excluding the specified file)

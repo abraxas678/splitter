@@ -36,7 +36,7 @@ mysheet2() {
 
 mysheet() {
   # Create list of scripts
-  ls *.sh | grep -v "create_script.sh" > myfiles
+  ls ./shs/*.sh | grep -v "create_script.sh" > myfiles
     rm -f mysheet2.csv
     rm -f mysheet.csv
     x=1
